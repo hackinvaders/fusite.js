@@ -1,0 +1,5 @@
+html { margin:0; padding:0; }
+
+#canvas { border:1px dotted #f06; margin-left:100px; }
+
+#output { width:250px; height:250px; float:left; overflow-x:hidden; overflow-y:auto; background-color:#000; color:#fff; }
