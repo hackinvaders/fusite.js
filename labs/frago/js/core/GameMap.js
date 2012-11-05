@@ -71,7 +71,7 @@
 				mapX = i + this.viewport.x;
 				mapY = j + this.viewport.y;
 
-				tile = (this.mapData[mapY] && this.mapData[mapY][mapX]) ? this.mapData[mapY][mapX] : '';
+				tile = (this.mapData[mapY] && this.mapData[mapY][mapX]) ? this.mapData[mapY][mapX] : { ground: 0 };
 				this._drawTile(i, j, tile);
 			}
 		}
@@ -81,7 +81,13 @@
 	* Draw a single tile into the map
 	*/
 	m._drawTile = function(x, y, tile) {
-		this.ctx.fillText(tile, x * 16, y * 16);
+		var asset = this._assetsManager.getAsset( tile.ground );
+		this.ctx.drawImage( asset, x * 16, y * 16 );
+
+		if (tile.item) {
+			asset =this._assetsManager.getAsset( tile.item );
+			this.ctx.drawImage( asset, x * 16, y * 16 );
+		}
 	},
 
 	/*
