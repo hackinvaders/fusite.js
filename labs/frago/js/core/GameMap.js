@@ -78,6 +78,14 @@
 	}
 
 	/*
+	* Update map position according to cordinates
+	*/
+	m.updateMap = function( position ) {
+		this.viewport = position;
+		this.draw();
+	}
+
+	/*
 	* Draw a single tile into the map
 	*/
 	m._drawTile = function(x, y, tile) {

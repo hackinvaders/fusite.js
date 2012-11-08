@@ -34,14 +34,14 @@
 	g.start = function(map, tiles) {
 		this.output('starting fusite...');
 
-		this.context.translate(0, 8);
+		//this.context.translate(0, 8);
 
 		// Init viewport
 		this._viewport = new GameViewport();
 
 		if (map === undefined || tiles === undefined) return;
 
-		// Init map
+		// Init Game Map
 		this._map = new GameMap();
 		this._map.mapData = map;
 		this._map.tiles = tiles
@@ -51,6 +51,9 @@
 		this._map.height = this.height() / this._TILES_SIZE;
 
 		this.drawMap();
+
+		// Init Game Controls
+		this._initGameControls();
 	}
 
 	/*
@@ -63,10 +66,28 @@
 	}
 
 	/*
-	* Initializing GameMap
+	* Initializing event listeners for control the game
 	*/
-	g._initMap = function(map) {
-		
+	g._initGameControls = function() {
+		$(window.document).on('keydown', $.proxy(function(e) {
+			switch(e.which) {
+				case 38: // up
+					this._viewport.y--;
+					break;
+				case 40: // down
+					this._viewport.y++;
+					break;
+				case 37: // left
+					this._viewport.x--;
+					break;
+				case 39: // right
+					this._viewport.x++;
+					break;
+			}
+
+			this._map.updateMap( this._viewport.position() );
+		}, this));
+
 	}
 
 	/*
