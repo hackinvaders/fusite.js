@@ -17,11 +17,6 @@
 	m.height = 0;
 
 	/*
-	* Context to draw into the canvas element
-	*/
-	m.ctx = null;
-
-	/*
 	* Know if the assets are loaded
 	*/
 	m._assetsLoaded = false;
@@ -49,14 +44,14 @@
 	/*
 	* Constructor
 	*/
-	m.initialize = function(ctx) {
-		this.ctx = ctx;
+	m.initialize = function() {
+
 	}
 
 	/*
 	* Draw map
 	*/
-	m.draw = function() {
+	m.draw = function( callback ) {
 		if (!this._assetsLoaded) {
 			this._loadAssets();
 			return;
@@ -80,7 +75,7 @@
 	/*
 	* Update map position according to cordinates
 	*/
-	m.updateMap = function( position ) {
+	m.update = function( position ) {
 		this.viewport = position;
 		this.draw();
 	}

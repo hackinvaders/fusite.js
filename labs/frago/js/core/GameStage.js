@@ -65,6 +65,13 @@
 		this._map.draw();
 	}
 
+	g.addPlayer = function(options) {
+		this._player = new GamePlayer();
+		this._player.name = options.name;
+		this._player.stage = this.context; // improve?
+		this._player.draw( options.sprites );
+	}
+
 	/*
 	* Initializing event listeners for control the game
 	*/
@@ -73,19 +80,29 @@
 			switch(e.which) {
 				case 38: // up
 					this._viewport.y--;
+					pos = 'n0';
 					break;
 				case 40: // down
 					this._viewport.y++;
+					pos = 's0';
 					break;
 				case 37: // left
 					this._viewport.x--;
+					pos = 'w0';
 					break;
 				case 39: // right
 					this._viewport.x++;
+					pos = 'e0';
+					break;
+				default:
 					break;
 			}
 
-			this._map.updateMap( this._viewport.position() );
+			// render map
+			this._map.update( this._viewport.position() );
+			
+			// render player
+			if (this._player) this._player.update( pos );
 		}, this));
 
 	}
