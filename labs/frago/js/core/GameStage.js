@@ -3,8 +3,7 @@
 	var GameStage = function(canvas) {
 		this.initialize();
 	}
-	var g = GameStage.prototype = new Stage;
-	g.parent = Stage.prototype;
+	var g = GameStage.prototype;
 
 	/*
 	* Viewport instance
@@ -21,23 +20,20 @@
 	*/
 	g._outhnd = window.document.getElementById('output');
 
+	g.stage = null;
+
 	/*
 	* Constructor
 	*/
 	g.initialize = function() {
-		this.parent.initialize(canvas);
+		this.stage = Stage.getInstance();
 	}
 
 	/*
 	* Start Game Stage
 	*/
 	g.start = function(map, tiles) {
-		this.output('starting fusite...');
-
 		//this.context.translate(0, 8);
-
-		// Init viewport
-		this._viewport = new GameViewport();
 
 		if (map === undefined || tiles === undefined) return;
 
@@ -45,31 +41,22 @@
 		this._map = new GameMap();
 		this._map.mapData = map;
 		this._map.tiles = tiles
-		this._map.viewport = this._viewport.position();
-		this._map.ctx = this.context;
-		this._map.width = this.width() / this._TILES_SIZE;
-		this._map.height = this.height() / this._TILES_SIZE;
-
-		this.drawMap();
+		this._map.width = this.stage.width() / this._TILES_SIZE;
+		this._map.height = this.stage.height() / this._TILES_SIZE;
+		this._map.draw();
 
 		// Init Game Controls
 		this._initGameControls();
 	}
 
 	/*
-	* Render map
+	* Add player to the map
 	*/
-	g.drawMap = function() {
-		this.output('drawing map...');
-
-		this._map.draw();
-	}
-
 	g.addPlayer = function(options) {
 		this._player = new GamePlayer();
 		this._player.name = options.name;
-		this._player.stage = this.context; // improve?
-		this._player.draw( options.sprites );
+		this._player.sprites = options.sprites;
+		this._player.draw();
 	}
 
 	/*
@@ -79,19 +66,19 @@
 		$(window.document).on('keydown', $.proxy(function(e) {
 			switch(e.which) {
 				case 38: // up
-					this._viewport.y--;
+					this._map.viewport.y--;
 					pos = 'n0';
 					break;
 				case 40: // down
-					this._viewport.y++;
+					this._map.viewport.y++;
 					pos = 's0';
 					break;
 				case 37: // left
-					this._viewport.x--;
+					this._map.viewport.x--;
 					pos = 'w0';
 					break;
 				case 39: // right
-					this._viewport.x++;
+					this._map.viewport.x++;
 					pos = 'e0';
 					break;
 				default:
@@ -99,10 +86,10 @@
 			}
 
 			// render map
-			this._map.update( this._viewport.position() );
+			this._map.draw();
 			
 			// render player
-			if (this._player) this._player.update( pos );
+			if (this._player) this._player.draw( pos );
 		}, this));
 
 	}

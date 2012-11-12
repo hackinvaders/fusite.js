@@ -4,31 +4,38 @@
 		this.initialize();
 	}
 
-	var p = GamePlayer.prototype;
+	var p = GamePlayer.prototype = new GameObject();
 
-	p._assetManager;
-
-	p.stage;
-
+	/*
+	* Position of the player
+	*/
 	p._spritePosition = 's0';
+
+	/*
+	* Sprites of the player
+	*/
+	p.sprites = [];
 
 	/*
 	* Constructor
 	*/
-	p.initialize = function(ctx) {
-		if (!ctx) return;
+	p.initialize = function() {
 
-		this.stage = ctx;
 	}
 
 	/*
 	* Draw player on the map
 	*/
-	p.draw = function(assets) {
-		if (!this.stage) return;
+	p.draw = function( orientation ) {
+		if (!this.assetsLoaded) {
+			this.loadAssets( this.sprites, $.proxy(this._callback_render, this) );
+			return;
+		}
 
-		this._loadAssets(assets);
-		assets = null;
+		if (orientation) this._spritePosition = orientation;
+
+		var loc = this._calculateLocation();
+		this.stage.drawImage( this._assetsManager.getAsset(this._spritePosition), loc.left, loc.top );
 	},
 
 	/*
@@ -41,8 +48,8 @@
 		};
 
 		var screen = {
-			width: 144, // Fix me: get data from Fusite object
-			height: 144 // Fix me: get data from Fusite object
+			width: Fusite.SCREEN_WIDTH,
+			height: Fusite.SCREEN_HEIGHT
 		};
 
 		var x = (screen.width / 2) - (character.width / 2),
@@ -52,38 +59,11 @@
 	}
 
 	/*
-	* Load all assets required for the map
+	* On assets loaded
 	*/
-	p._loadAssets = function(assets) {
-		var assetsLoaded = 0,
-			self = this;
-
-		this._assetsManager = new AssetManager();
-
-		for(var i=0, len=assets.length; i < len; i++) {
-			this._assetsManager.queueDownload(assets[i]);
-		}
-		this._assetsManager.downloadAll(function(){
-			assetsLoaded++;
-			
-			if (assetsLoaded == assets.length) {
-				self._assetsLoaded = true;
-				
-				self._render();
-				
-				assets = null;
-			}
-		});
-	}
-
-	p._render = function() {
-		var loc = this._calculateLocation();
-		this.stage.drawImage( this._assetsManager.getAsset(this._spritePosition), loc.left, loc.top );
-	}
-
-	p.update = function(position) {
-		this._spritePosition = position;
-		this._render();
+	p._callback_render = function() {
+		this.draw();
+		this.sprites = null;
 	}
 
 window.GamePlayer = GamePlayer;

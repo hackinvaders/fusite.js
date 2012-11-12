@@ -1,6 +1,6 @@
 (function(window, undefined) {
 
-	var Stage = function(canvas) {
+	function Stage(canvas) {
 		this.initialize(canvas);
 	}
 	var s = Stage.prototype;
@@ -16,9 +16,17 @@
 	s.context = null;
 
 	/*
+	* Implementation of singleton
+	*/
+	Stage.getInstance = function() {
+		return Singleton.getInstance( this.prototype.constructor.name );
+	}
+
+	/*
 	* Constructor
 	*/
 	s.initialize = function(canvas) {
+		canvas = window.document.getElementById('canvas');
 		if (typeof(canvas) === "undefined") return false;
 
 		this.stage = (canvas instanceof HTMLCanvasElement) ? canvas : window.document.appendChild( window.document.createElement('canvas') );

@@ -1,22 +1,24 @@
-var Fusite = function() {
+(function(window, undefined) {
 
-	var gs,
-		SCREEN_WIDTH,
-		SCREEN_HEIGHT;
+	function Fusite() {
 
-	/*
-	* The fun begins
-	*/
-	function start(options) {
-		gs = new GameStage( window.document.getElementById('canvas') );
+	}
 
-		SCREEN_WIDTH = options.screenWidth;
-		SCREEN_HEIGHT = options.screenHeight;
-		SPRITE_SIZE = (options.spriteSize) ? options.spriteSize : 16;
+	Fusite.SCREEN_WIDTH = 160;
 
-	    gs.width(SCREEN_WIDTH);
-	    gs.height(SCREEN_HEIGHT);
-	    gs.start(options.map, options.tiles);
+	Fusite.SCREEN_HEIGHT = 160;
+
+	var gs = null;
+
+	Fusite.start = function( options ) {
+		Fusite.SCREEN_WIDTH = options.screenWidth;
+		Fusite.SCREEN_HEIGHT = options.screenHeight;
+		Fusite.SPRITE_SIZE = (options.spriteSize) ? options.spriteSize : 16;
+
+	    gs = new GameStage( window.document.getElementById('canvas') );
+	    gs.stage.width( Fusite.SCREEN_WIDTH );
+	    gs.stage.height( Fusite.SCREEN_HEIGHT );
+	    gs.start( options.map, options.tiles );
 	}
 
 	/*
@@ -27,15 +29,11 @@ var Fusite = function() {
 	*		sprites: []
 	*	}
 	*/
-	function player(options) {
+	Fusite.player = function(options) {
+		if (!gs) return;
+
 		gs.addPlayer(options);
 	}
 
-	return {
-		start: start,
-		player: player,
-		SCREEN_WIDTH: SCREEN_WIDTH,
-		SCREEN_HEIGHT: SCREEN_HEIGHT
-	}
-
-}();
+window.Fusite = Fusite;
+})(window)

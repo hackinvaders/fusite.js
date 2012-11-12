@@ -56,6 +56,6 @@
     });
     
     // Draw another map
-    //Fusite.drawMap('TownMap'); 
+    // Fusite.drawMap('TownMap');
 
 })(window);

@@ -4,7 +4,7 @@
 		this.initialize();
 	}
 
-	var m = Map.prototype;
+	var m = Map.prototype = new GameObject();
 
 	/*
 	* Width of the map in tiles
@@ -17,16 +17,6 @@
 	m.height = 0;
 
 	/*
-	* Know if the assets are loaded
-	*/
-	m._assetsLoaded = false;
-
-	/*
-	* Load and retreive all the assets required for the map
-	*/
-	m._assetsManager;
-
-	/*
 	* Maps array
 	*/
 	m.mapData;
@@ -34,26 +24,26 @@
 	/*
 	* Viewport positions
 	*/
-	m.viewport;
+	m.viewport = null;
 
 	/*
 	* Temporal array of tiles
 	*/
-	m.tiles;
+	m.tiles = [];
 
 	/*
 	* Constructor
 	*/
 	m.initialize = function() {
-
+		this.viewport = new GameViewport();
 	}
 
 	/*
 	* Draw map
 	*/
-	m.draw = function( callback ) {
-		if (!this._assetsLoaded) {
-			this._loadAssets();
+	m.draw = function() {
+		if (!this.assetsLoaded) {
+			this.loadAssets( this.tiles, $.proxy(this._callback_render, this) );
 			return;
 		}
 
@@ -73,47 +63,24 @@
 	}
 
 	/*
-	* Update map position according to cordinates
-	*/
-	m.update = function( position ) {
-		this.viewport = position;
-		this.draw();
-	}
-
-	/*
 	* Draw a single tile into the map
 	*/
 	m._drawTile = function(x, y, tile) {
 		var asset = this._assetsManager.getAsset( tile.ground );
-		this.ctx.drawImage( asset, x * 16, y * 16 );
+		this.stage.drawImage( asset, x * 16, y * 16 );
 
 		if (tile.item) {
 			asset =this._assetsManager.getAsset( tile.item );
-			this.ctx.drawImage( asset, x * 16, y * 16 );
+			this.stage.drawImage( asset, x * 16, y * 16 );
 		}
-	},
+	}
 
 	/*
-	* Load all assets required for the map
+	* On assets loaded
 	*/
-	m._loadAssets = function() {
-		var tilesLoaded = 0,
-			self = this;
-
-		this._assetsManager = new AssetManager();
-
-		for(var i=0, len=this.tiles.length; i < len; i++) {
-			this._assetsManager.queueDownload(this.tiles[i]);
-		}
-		this._assetsManager.downloadAll(function(){
-			tilesLoaded++;
-			
-			if (tilesLoaded == self.tiles.length) {
-				self._assetsLoaded = true;
-				self.draw();
-				self.tiles = null;
-			}
-		});
+	m._callback_render = function() {
+		this.draw();
+		this.tiles = null;
 	}
 
 window.GameMap = Map;
