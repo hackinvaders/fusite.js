@@ -3,6 +3,9 @@
 	var GameStage = function(canvas) {
 		this.initialize();
 	}
+
+	GameStage.canInput = false;
+
 	var g = GameStage.prototype;
 
 	/*
@@ -20,6 +23,9 @@
 	*/
 	g._outhnd = window.document.getElementById('output');
 
+	/*
+	* Reference to the canvas of the application
+	*/
 	g.stage = null;
 
 	/*
@@ -36,6 +42,8 @@
 		//this.context.translate(0, 8);
 
 		if (map === undefined || tiles === undefined) return;
+
+		GameStage.canInput = true;
 
 		// Init Game Map
 		this._map = new GameMap();
@@ -64,32 +72,35 @@
 	*/
 	g._initGameControls = function() {
 		$(window.document).on('keydown', $.proxy(function(e) {
-			switch(e.which) {
-				case 38: // up
-					this._map.viewport.y--;
-					pos = 'n0';
-					break;
-				case 40: // down
-					this._map.viewport.y++;
-					pos = 's0';
-					break;
-				case 37: // left
-					this._map.viewport.x--;
-					pos = 'w0';
-					break;
-				case 39: // right
-					this._map.viewport.x++;
-					pos = 'e0';
-					break;
-				default:
-					break;
-			}
+			if (GameStage.canInput) {
+				switch(e.which) {
+					case 38: // up
+						this._map.viewport.y--;
+						pos = 'up';
+						break;
+					case 40: // down
+						this._map.viewport.y++;
+						pos = 'down';
+						break;
+					case 37: // left
+						this._map.viewport.x--;
+						pos = 'left';
+						break;
+					case 39: // right
+						this._map.viewport.x++;
+						pos = 'right';
+						break;
+					default:
+						break;
+				}
 
-			// render map
-			this._map.draw();
-			
-			// render player
-			if (this._player) this._player.draw( pos );
+				// render map
+				this._map.draw();
+				
+				// render player
+				// if (this._player) this._player.draw( pos );
+				if (this._player) this._player.move( pos );
+			}
 		}, this));
 
 	}

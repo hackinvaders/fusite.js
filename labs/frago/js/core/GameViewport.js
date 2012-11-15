@@ -17,6 +17,18 @@
 	v.y = 0;
 
 	/*
+	* Offset player in x axis
+	*/
+	v.playerOffsetX = 0;
+
+	/*
+	* Offset player in y axis
+	*/
+	v.playerOffsetY = 0;
+
+	v.overflowTile = 1;
+
+	/*
 	* Init viewport
 	*/
 	v.initialize = function() {

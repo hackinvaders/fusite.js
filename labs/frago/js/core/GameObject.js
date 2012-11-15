@@ -12,6 +12,11 @@
 	g.stage = null;
 
 	/*
+	* Viewport instance
+	*/
+	g.viewport = null;
+
+	/*
 	* Load and retreive all the assets required for the map
 	*/
 	g.assetManager = null;
@@ -29,7 +34,10 @@
 		this.stage = Stage.getInstance().context;
 
 		// Init asset manager
-		this._assetsManager = new AssetManager();
+		this.assetsManager = new AssetManager();
+
+		// Init game viewport
+		this.viewport = new GameViewport();
 	}
 
 	/*
@@ -54,9 +62,9 @@
 			self = this;
 
 		for(var i=0, len=assets.length; i < len; i++) {
-			this._assetsManager.queueDownload(assets[i]);
+			this.assetsManager.queueDownload(assets[i]);
 		}
-		this._assetsManager.downloadAll(function(){
+		this.assetsManager.downloadAll(function(){
 			assetsLoaded++;
 			
 			if (assetsLoaded == assets.length) {
@@ -67,7 +75,12 @@
 		});
 	}
 
-
+	/*
+	* callback function for render the map
+	*/
+	g.drawMap = function() {
+		return false;
+	}
 
 window.GameObject = GameObject;
 })(window)

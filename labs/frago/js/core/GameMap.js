@@ -22,11 +22,6 @@
 	m.mapData;
 
 	/*
-	* Viewport positions
-	*/
-	m.viewport = null;
-
-	/*
 	* Temporal array of tiles
 	*/
 	m.tiles = [];
@@ -35,7 +30,7 @@
 	* Constructor
 	*/
 	m.initialize = function() {
-		this.viewport = new GameViewport();
+		this.drawMap = this.draw;
 	}
 
 	/*
@@ -49,10 +44,12 @@
 
 		var mapX = 0,
 			mapY = 0,
-			tile;
+			tile,
+			iMax = this.width + this.viewport.overflowTile,
+			jMax = this.height + this.viewport.overflowTile;
 
-		for (var j=0; j < this.height; j++) {
-			for (var i=0; i < this.width; i++) {
+		for (var j=-this.viewport.overflowTile; j < jMax; j++) {
+			for (var i=-this.viewport.overflowTile; i < iMax; i++) {
 				mapX = i + this.viewport.x;
 				mapY = j + this.viewport.y;
 
@@ -66,12 +63,15 @@
 	* Draw a single tile into the map
 	*/
 	m._drawTile = function(x, y, tile) {
-		var asset = this._assetsManager.getAsset( tile.ground );
-		this.stage.drawImage( asset, x * 16, y * 16 );
+		var asset = this.assetsManager.getAsset( tile.ground ),
+			rx = x * 16 + this.viewport.playerOffsetX,
+			ry = y * 16 + this.viewport.playerOffsetY;
+
+		this.stage.drawImage( asset, rx, ry );
 
 		if (tile.item) {
-			asset =this._assetsManager.getAsset( tile.item );
-			this.stage.drawImage( asset, x * 16, y * 16 );
+			asset =this.assetsManager.getAsset( tile.item );
+			this.stage.drawImage( asset, rx, ry );
 		}
 	}
 
